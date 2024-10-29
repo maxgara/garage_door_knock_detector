@@ -20,8 +20,3 @@ int main()
 // THIS COMPILED:
 // gcc -I/opt/homebrew/Cellar/gsl/2.8/include -L/opt/homebrew/Cellar/gsl/2.8/lib -lgsl -lgslcblas test.c    
 
-void oldtest(){
-    double x = 5.0;
-    double y = gsl_sf_bessel_J0(x);
-    printf("J0(%g) = %.18e\n", x, y);
-}
