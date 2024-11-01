@@ -1,0 +1,26 @@
+fourier transform:
+
+f(x) = -sin(theta)
+Integral of -sin(theta) * sin(theta) on 0 -> 2pi:
+I[-sin^2(t)]dt = I[d/dt(sin(t)cos(t)) - cos^2(t)]dt = sin(t)cos(t) - I[cos^2(t)]dt
+= sin(t)cos(t) - I[1 - sin^2(t)]dt
+= sin(t)cos(t) - t + I[sin^2(t)]dt
+2*I[-sin^2(t)]dt = sin(t)cos(t) - t
+I[-sin^2(t)]dt = [sin(t)cos(t) - t] / 2
+= -pi
+
+for x in [-P/2, P/2], f(x) complex, n in Z, harmonics with frequencies in {n/P}: (why can n be <0 ???)
+harmonic n given by 1/P * Integral from -P/2->P/2 of f(x) * e^[-2pi*i * n/P * x] dx
+
+for any two frequencies a/P, b/P, look at integral of product:
+I[e^[-2pi*i * a/P * x] * e^[-2pi*i * b/P * x]]dx
+=I[e^[-2pi*i * (a+b)/P * x]]dx. 
+And with bounds:
+=I[e^[-2pi*i * (a+b)/P * x]]dx
+This is just the integral of another harmonic (with frequency a+b/P). Over range P the integral must be 0. 
+
+
+------------------------------------------------------------
+let z be a frequency (of form n/P)
+s_n(z) = Sum[T * s(nt) * e^{-2ipi * z * T * n}] over all n in Z
+
