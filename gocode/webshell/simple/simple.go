@@ -31,7 +31,7 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 
 // client.c -> user
 func readHandler(w http.ResponseWriter, r *http.Request) {
-	ok := stdin.Scan()
+	ok := stdin.Scan() //<- client
 	if !ok {
 		fmt.Fprintf(os.Stderr, "scanner done.\n")
 	}
@@ -47,5 +47,5 @@ func inputHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(os.Stderr, "input data:%v\n", r.Form.Get("data"))
-	fmt.Print(r.Form.Get("data"))
+	fmt.Print(r.Form.Get("data")) //-> client
 }

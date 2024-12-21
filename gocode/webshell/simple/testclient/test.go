@@ -8,20 +8,21 @@ import (
 )
 
 func main() {
+	go listen() //read from stdin
 	t := time.NewTicker(time.Millisecond)
-	go listen()
 	for {
-		fmt.Println(<-t.C)
+		fmt.Println(<-t.C) //write to stdout
 	}
 }
 func listen() {
 	// b := make([]byte, 4)
-	s := bufio.NewScanner(os.Stdin)
+	r := bufio.NewReader(os.Stdin)
 	for {
-		s.Scan()
-		if len(s.Bytes()) == 0 {
-			continue
+		b, err := r.ReadByte()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "client: error on read: %v\n", err)
+			os.Exit(1)
 		}
-		fmt.Printf("read: [%s]!\n", s.Bytes())
+		fmt.Fprintf(os.Stderr, "read: [%c]!\n", b)
 	}
 }

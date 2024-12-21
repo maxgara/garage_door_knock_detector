@@ -1,4 +1,1 @@
-mkfifo ctos
-mkfifo stoc
-./testclient/ticker <stoc >ctos&
-./server <ctos >stoc&
+./server < ctos > stoc & ; ./testclient/testclient > ctos < stoc&
