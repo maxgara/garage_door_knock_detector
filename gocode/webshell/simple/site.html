@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+    <script>
+        window.onload = (event) => {
+            var term = document.querySelector("div")
+            var buff = ""
+            document.addEventListener("keypress", f)
+            function f(x) {
+                var k = x.key
+                console.log(k)
+                if (k == "Enter") {
+                    fetch("/input", {
+                        method: "POST",
+                        headers: { "content-type": "application/x-www-form-urlencoded" },
+                        body: `data="${buff}"`
+                    }); //submit user input
+                    buff = ""; //reset buffer
+                }
+                else {
+                    buff += k
+                    term.textContent += k // write keypress to term element
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: black;
+        }
+
+        div {
+            border: solid salmon;
+            caret-color: white;
+            color: white;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="terminal" hx-trigger="every 3s" hx-get="/read" hx-swap="beforeend">
+    </div>
+</body>
+
+</html>
