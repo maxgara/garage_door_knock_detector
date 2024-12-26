@@ -13,8 +13,8 @@ var r, w *os.File
 // read from stdin pipe
 func main() {
 	var counter int
-	// runproc()
-	// fmt.Println("proc started")
+	runproc()
+	fmt.Println("proc started")
 	var err error
 	r, err = os.OpenFile("/Users/maxgara/Desktop/al-code/garage/gocode/webshell/simple/test/ctos", os.O_RDONLY|os.O_SYNC, os.ModeNamedPipe)
 	if err != nil {
@@ -53,6 +53,11 @@ func write(p *os.File, c int) {
 }
 func runproc() {
 
-	com := exec.Command("./startclientproc.sh")
-	com.Start()
+	com := exec.Command("/bin/zsh", "./startclientproc.sh")
+	err := com.Start()
+	if err != nil {
+		fmt.Println("error starting proc")
+		fmt.Println(err)
+		return
+	}
 }

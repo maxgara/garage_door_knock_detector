@@ -21,6 +21,7 @@
             y = scrollY
             document.body.scrollTo(y, h)
         }
+
         window.onload = (event) => {
             crsr = document.createElement("div")
             crsr.id = "cursor"
@@ -38,7 +39,7 @@
                     fetch("/input", {
                         method: "POST",
                         headers: { "content-type": "application/x-www-form-urlencoded" },
-                        body: `data="${buff}"`
+                        body: `data=${buff}`
                     }); //submit user input
                     add(term, "\n")
                     buff = ""; //reset buffer
@@ -77,7 +78,7 @@
 
 <body>
     <label for="terminal">client.c</label>
-    <pre id="terminal" hx-trigger="every 2s" hx-get="/read" hx-swap="beforeend">
+    <pre id="terminal" hx-trigger="every 200ms" hx-get="/read" hx-swap="beforeend">
     </pre>
     <div id="end"></div>
 </body>
