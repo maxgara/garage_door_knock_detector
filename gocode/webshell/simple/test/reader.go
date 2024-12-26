@@ -12,7 +12,7 @@ import (
 func main() {
 	// runproc()
 	// fmt.Println("proc started")
-	p, err := os.OpenFile("/Users/maxgara/Desktop/al-code/garage/gocode/webshell/simple/test/ctos", os.O_RDONLY, os.ModeNamedPipe)
+	p, err := os.OpenFile("/Users/maxgara/Desktop/al-code/garage/gocode/webshell/simple/test/ctos", os.O_RDONLY|os.O_SYNC, os.ModeNamedPipe)
 	fmt.Println("ctos opened for read")
 	if err != nil {
 		fmt.Println(err)
@@ -27,7 +27,7 @@ func read(p *os.File) {
 	for {
 		got, err := p.Read(b)
 		if got != 0 {
-			fmt.Printf("ctos -> %s\n", b[:got])
+			fmt.Printf("ctos -> %#q\n", b[:got])
 		}
 		if err != nil {
 			fmt.Printf("reader got err: %v\n", err)
