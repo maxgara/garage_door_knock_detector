@@ -28,9 +28,9 @@ func main() {
 	// 	f2Print("fit-smooth", D, E, w, sdata)
 	// }
 
-	// ksdata := loadFileNewFormat("eightrealknocks.txt")
-	// dcsdata := loadFileNewFormat("eightdoorcloses.txt")
-	data := loadFile()
+	ksdata := loadFileNewFormat("eightrealknocks.txt")
+	dcsdata := loadFileNewFormat("eightdoorcloses.txt")
+	// data := loadFile("fit-testfile.txt")
 	printBuff = append(printBuff, "knocks vs door closes"...)
 	// fmt.Println(len(mdata))
 	// arrPrint("normal", mdata[0], true)

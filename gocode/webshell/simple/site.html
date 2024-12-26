@@ -3,24 +3,49 @@
 <head>
     <script src="https://unpkg.com/htmx.org@2.0.3"></script>
     <script>
+        var crsr
+        function updateCursorPos(c, term) {
+            if (c != null) {
+                term.removeChild(c)
+            }
+            term.appendChild(t)
+        }
+        function flashCursor(c) {
+            setInterval(() => { c.classList.toggle("hidden") }, 500)
+        }
+        function add(term, text) {
+            term.removeChild(crsr)
+            term.innerHTML = term.innerHTML + text
+            term.appendChild(crsr)
+            h = document.body.scrollHeight
+            y = scrollY
+            document.body.scrollTo(y, h)
+        }
         window.onload = (event) => {
-            var term = document.querySelector("div")
+            crsr = document.createElement("div")
+            crsr.id = "cursor"
+            crsr.textContent = "█"
+            flashCursor(crsr)
+            var term = document.querySelector("#terminal")
+            term.appendChild(crsr)
             var buff = ""
             document.addEventListener("keypress", f)
+
             function f(x) {
                 var k = x.key
-                console.log(k)
+                console.log("[" + k + "]")
                 if (k == "Enter") {
                     fetch("/input", {
                         method: "POST",
                         headers: { "content-type": "application/x-www-form-urlencoded" },
                         body: `data="${buff}"`
                     }); //submit user input
+                    add(term, "\n")
                     buff = ""; //reset buffer
                 }
                 else {
                     buff += k
-                    term.textContent += k // write keypress to term element
+                    add(term, k)
                 }
             }
         }
@@ -28,9 +53,20 @@
     <style>
         body {
             background-color: black;
+            color: white;
+            color: light-dark;
         }
 
-        div {
+        #cursor {
+            border: none;
+            display: inline-block;
+        }
+
+        #cursor.hidden {
+            color: black;
+        }
+
+        #terminal {
             border: solid salmon;
             caret-color: white;
             color: white;
@@ -40,8 +76,10 @@
 </head>
 
 <body>
-    <div id="terminal" hx-trigger="every 3s" hx-get="/read" hx-swap="beforeend">
-    </div>
+    <label for="terminal">client.c</label>
+    <pre id="terminal" hx-trigger="every 2s" hx-get="/read" hx-swap="beforeend">
+    </pre>
+    <div id="end"></div>
 </body>
 
 </html>

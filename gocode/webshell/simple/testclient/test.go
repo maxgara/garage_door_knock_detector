@@ -2,27 +2,52 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 	"time"
 )
 
+var log bytes.Buffer
+
 func main() {
-	go listen() //read from stdin
-	t := time.NewTicker(time.Millisecond)
+	go savelog()
+	done := make(chan bool)
+	go listen(done) //read from stdin
+	go tick()
+	<-done
+}
+func savelog() {
 	for {
-		fmt.Println(<-t.C) //write to stdout
+		time.Sleep(time.Second)
+		b := make([]byte, 256)
+		n, _ := log.Read(b)
+		fmt.Printf("savelog:%v\n", string(b[:n]))
+		// if err != nil {
+		// 	fmt.Println(err)
+		// 	return
+		// }
+		// fmt.Println("log saved")
 	}
 }
-func listen() {
+func tick() {
+	t := time.NewTicker(time.Second)
+	for {
+		fmt.Println(<-t.C) //write to stdout
+
+	}
+}
+func listen(done chan bool) {
 	// b := make([]byte, 4)
 	r := bufio.NewReader(os.Stdin)
 	for {
 		b, err := r.ReadByte()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "client: error on read: %v\n", err)
-			os.Exit(1)
+			fmt.Fprintf(&log, "client: error on read: %v\n", err)
+			done <- true
+			return
 		}
-		fmt.Fprintf(os.Stderr, "read: [%c]!\n", b)
+		fmt.Printf("read: [%c]!\n", b)
 	}
+
 }

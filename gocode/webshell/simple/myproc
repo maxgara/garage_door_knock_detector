@@ -1,0 +1,3 @@
+cat > tempfile.txt & 
+ pid=$! 
+ echo "test"
