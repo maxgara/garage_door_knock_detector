@@ -27,7 +27,7 @@ func main() {
 	_ = w
 	_ = r
 	for {
-		// cWriter = w
+	    cWriter = w
 		cReader = r
 		s := readclient()
 		if s != "" {
@@ -51,31 +51,17 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write(f)
 }
-
-func readclient() string {
-	var b []byte
-	n, err := cReader.Read(b)
-	if err == io.EOF {
-		fmt.Println(err)
-		return string(b[:n])
-	}
-	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	return string(b[:n])
-}
-
 // client.c -> user
 func readHandler(w http.ResponseWriter, r *http.Request) {
-	var b []byte
+	var buff := make([]byte,256)
 	n, err := cReader.Read(b)
+
+	if n != 0 {
+		fmt.Printf("read creader <- [%s]\n", buff[:n])
+		w.Write(buff[:n])
+	}
 	if err != nil && err != io.EOF {
 		fmt.Printf("error: %v\n", err)
-	}
-	if n != 0 {
-		fmt.Println("reading from creader.")
-		w.Write(b)
 	}
 	// c := readbychar()
 	// w.Write()
