@@ -32,7 +32,7 @@ func main() {
 	http.HandleFunc("/read", readHandler)
 	http.HandleFunc("/input", inputHandler)
 	fmt.Println("setup complete: running ListenAndServe()")
-	log.Fatal(http.ListenAndServe("localhost:8000", nil))
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
 // site -> user
