@@ -96,12 +96,16 @@ func EachSeries(sers [][]float64, f func([]float64)) {
 		f(ser)
 	}
 }
+func newchart(title string){
+	fmt.Printf("\n-n%v\n", title)
+}
 
 // print data formatted as fourier-transform output data
 func printfour(data []float64) {
 	n := len(data)
 	var m float64
 	var midx int
+	fmt.Println()
 	for i, v := range data[1 : n/2] {
 		if v >= m {
 			m = v
