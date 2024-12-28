@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -18,28 +17,22 @@ func main() {
 	//set up client.c and pipeline
 	runproc()
 	fmt.Println("started client.c")
-	r, rerr := os.OpenFile("ctos", os.O_RDONLY, os.ModeNamedPipe)
-	w, werr := os.OpenFile("stoc", os.O_WRONLY, os.ModeNamedPipe)
+	r, rerr := os.OpenFile("/Users/maxgara/Desktop/al-code/garage/gocode/webshell/simple/ctos", os.O_RDONLY|os.O_SYNC, os.ModeNamedPipe)
+
+	w, werr := os.OpenFile("/Users/maxgara/Desktop/al-code/garage/gocode/webshell/simple/stoc", os.O_WRONLY|os.O_SYNC, os.ModeNamedPipe)
 	fmt.Println("opened files")
 	if rerr != nil || werr != nil {
 		log.Fatal(errors.Join(rerr, werr))
 	}
-	_ = w
-	_ = r
-	for {
-		// cWriter = w
-		cReader = r
-		s := readclient()
-		if s != "" {
-			fmt.Println(s)
-		}
-	}
+	cWriter = w
+	cReader = r
+
 	// //set up + run server
-	// http.HandleFunc("/", defaultHandler)
-	// http.HandleFunc("/read", readHandler)
-	// http.HandleFunc("/input", inputHandler)
-	// fmt.Println("setup complete: running ListenAndServe()")
-	// log.Fatal(http.ListenAndServe("localhost:8000", nil))
+	http.HandleFunc("/", defaultHandler)
+	http.HandleFunc("/read", readHandler)
+	http.HandleFunc("/input", inputHandler)
+	fmt.Println("setup complete: running ListenAndServe()")
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
 // site -> user
@@ -52,33 +45,17 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(f)
 }
 
-func readclient() string {
-	var b []byte
-	n, err := cReader.Read(b)
-	if err == io.EOF {
-		fmt.Println(err)
-		return string(b[:n])
-	}
-	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	return string(b[:n])
-}
-
 // client.c -> user
 func readHandler(w http.ResponseWriter, r *http.Request) {
-	var b []byte
+	b := make([]byte, 256)
 	n, err := cReader.Read(b)
-	if err != nil && err != io.EOF {
+	if n != 0 {
+		fmt.Printf("read creader <- [%s]\n", b[:n])
+		w.Write(b[:n])
+	}
+	if err != nil {
 		fmt.Printf("error: %v\n", err)
 	}
-	if n != 0 {
-		fmt.Println("reading from creader.")
-		w.Write(b)
-	}
-	// c := readbychar()
-	// w.Write()
 }
 
 // user input -> client.c
@@ -88,8 +65,9 @@ func inputHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(os.Stderr, "err parsing input form:%v\n", err)
 		return
 	}
-	fmt.Fprintf(os.Stderr, "input data:%v\n", r.Form.Get("data"))
-	fmt.Fprintf(cWriter, "%s\n", r.Form.Get("data")) //write client
+	data := r.Form.Get("data")
+	fmt.Fprintf(os.Stderr, "input data:%v\n", data)
+	fmt.Fprintf(cWriter, "%s\n", format([]byte(data))) //write client
 }
 
 // text -> HTML
@@ -99,12 +77,14 @@ func format(arr []byte) []byte {
 	for _, c := range arr {
 		if c == '\n' {
 			out = append(out, nl...)
+		} else {
+			out = append(out, c)
 		}
 	}
 	return out
 }
 
 func runproc() {
-	com := exec.Command("./startclientproc.sh")
+	com := exec.Command("/bin/zsh", "./startclientproc.sh")
 	com.Start()
 }

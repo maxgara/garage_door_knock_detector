@@ -1,1 +1,1 @@
-./../testclient/testclient > ctos
+./testclient > ./ctos
